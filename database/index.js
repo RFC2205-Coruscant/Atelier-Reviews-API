@@ -11,7 +11,7 @@ const client = new Client({
 
 client.connect();
 
-client.query(`SELECT * from reviewdata`,(err, res) => {
+client.query(`SELECT * from reviewdata LIMIT 10`,(err, res) => {
   if(!err) {
     console.log(res.rows);
   } else {
