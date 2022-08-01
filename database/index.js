@@ -1,23 +1,23 @@
-const { Client } = require('pg');
+const { Pool } = require('pg');
 
 
-const client = new Client({
+const pool = new Pool({
   host: process.env.DB_HOST || 'localhost',
   port: process.env.PORT || 5432,
   user: process.env.DB_USER || 'postgres',
-  password: process.env.DB_PASS || 'password1',
+  password: process.env.DB_PASS,
   database: process.env.DB_NAME || 'reviews'
 });
 
-client.connect();
+pool.connect();
 
-client.query(`SELECT * from reviewdata LIMIT 10`,(err, res) => {
+pool.query(`SELECT * from reviewdata WHERE "PRODUCT_ID" = 641268 LIMIT 20`,(err, res) => {
   if(!err) {
     console.log(res.rows);
   } else {
     console.log(err.message);
   }
-  client.end
+  pool.end
 })
 // .then(() => console.log("Connected to postgres....."))
 // .catch((err) => console.log(err))

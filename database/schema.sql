@@ -28,3 +28,4 @@ CREATE TABLE `reviewcharacteristics` (
   `review_id` INTEGER,
   `value` INTEGER,
 )
+
