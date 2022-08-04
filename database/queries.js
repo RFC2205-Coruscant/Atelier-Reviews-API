@@ -2,7 +2,7 @@
 const pool  = require('./index');
 
 
-//SELECT REVIEW DATA
+//GET REVIEW DATA
 const getReviews = function () {
 
   // const pool = new Pool({
@@ -13,7 +13,7 @@ const getReviews = function () {
   //   database: process.env.DB_NAME || 'reviews'
   // });
 
-  // pool.connect();
+pool.connect();
 
 pool.query(`SELECT  DISTINCT
 reviewdata.id AS review_id,
@@ -54,13 +54,56 @@ LIMIT 5;`, (err, res) => {
 
 getReviews();
 
+//POST REVIEW
+
+const addReview = function (review) {
+  let query =
+  `INSERT INTO 'reviewdata'
+  ("product_id",
+   "rating",
+   "date",
+   "summary",
+   "body",
+   "recommend",
+   "reviewer_name",
+   "review_email",
+   "helpfulness")
+   VALUES
+   (${review.product_id},
+    ${review.rating},
+    CURRENT_TIMESTAMP,
+    ${review.summary},
+    ${review.body},
+    ${review.recommend},
+    ${review.reviewer_name},
+    ${review.reviewer_email})
+    RETURNING
+    review_id`
+
+    return pool.connect().then((client) => {
+      return client
+      .query(query)
+      .then((res) => {
+        if (review.photos !== []) {
+          let insertPhoto = ``;
+          photosData = review.photos
+          photosData
+        }
+      })
+      .catch((err) => {
+        client.release();
+        return err;
+      })
+    })
+}
+
 //UPDATE HELPFULNESS
 const updateHelpful = function (reviewID) {
 
-  const query =
+  let query =
   `UPDATE 'reviewdata'
-   SET 'HELPFULNESS' = 'HELPFULNESS' + 1
-   WHERE 'ID' = ${reviewID}
+   SET 'helpfulness' = 'helpfulness' + 1
+   WHERE 'id' = ${reviewID}
   `;
 
   return pool.connect().then((client) => {
@@ -79,11 +122,11 @@ const updateHelpful = function (reviewID) {
 }
 
 //UPDATE REPORTED
-const updateReported = function (reviewID) => {
-  const query =
+const updateReported = function (reviewID) {
+  let query =
   `UPDATE 'reviewdata'
-   SET 'REPORTED' = ${true}
-   WHERE 'ID' = ${reviewID}
+   SET 'reported' = ${true}
+   WHERE 'id' = ${reviewID}
   `;
 
   return pool.connect().then((client) => {
@@ -100,6 +143,8 @@ const updateReported = function (reviewID) => {
   })
 
 }
+
+
 
 
 
