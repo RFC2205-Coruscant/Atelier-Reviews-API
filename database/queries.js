@@ -1,21 +1,13 @@
 // const { Pool } = require('pg');
-const pool  = require('./index');
+const pool = require('./index');
 
 
 //GET REVIEW DATA
 const getReviews = function () {
 
-  // const pool = new Pool({
-  //   host: process.env.DB_HOST || 'localhost',
-  //   port: process.env.PORT || 5432,
-  //   user: process.env.DB_USER || 'shirleynguyen',
-  //   password: process.env.DB_PASS,
-  //   database: process.env.DB_NAME || 'reviews'
-  // });
+  pool.connect();
 
-pool.connect();
-
-pool.query(`SELECT  DISTINCT
+  pool.query(`SELECT  DISTINCT
 reviewdata.id AS review_id,
 reviewdata.rating,
 reviewdata.summary,
@@ -52,13 +44,11 @@ LIMIT 5;`, (err, res) => {
   })
 }
 
-getReviews();
 
 //POST REVIEW
-
 const addReview = function (review) {
   let query =
-  `INSERT INTO 'reviewdata'
+    `INSERT INTO 'reviewdata'
   ("product_id",
    "rating",
    "date",
@@ -80,8 +70,8 @@ const addReview = function (review) {
     RETURNING
     review_id`
 
-    return pool.connect().then((client) => {
-      return client
+  return pool.connect().then((client) => {
+    return client
       .query(query)
       .then((res) => {
         if (review.photos !== []) {
@@ -94,29 +84,29 @@ const addReview = function (review) {
         client.release();
         return err;
       })
-    })
+  })
 }
 
 //UPDATE HELPFULNESS
 const updateHelpful = function (reviewID) {
 
   let query =
-  `UPDATE 'reviewdata'
+    `UPDATE 'reviewdata'
    SET 'helpfulness' = 'helpfulness' + 1
    WHERE 'id' = ${reviewID}
   `;
 
   return pool.connect().then((client) => {
     return client
-    .query(query)
-    .then((res) => {
-      client.release();
-      return res;
-    })
-    .catch((err) => {
-      client.release();
-      return err;
-    })
+      .query(query)
+      .then((res) => {
+        client.release();
+        return res;
+      })
+      .catch((err) => {
+        client.release();
+        return err;
+      })
   })
 
 }
@@ -124,22 +114,22 @@ const updateHelpful = function (reviewID) {
 //UPDATE REPORTED
 const updateReported = function (reviewID) {
   let query =
-  `UPDATE 'reviewdata'
+    `UPDATE 'reviewdata'
    SET 'reported' = ${true}
    WHERE 'id' = ${reviewID}
   `;
 
   return pool.connect().then((client) => {
     return client
-    .query(query)
-    .then((res) => {
-      client.release();
-      return res;
-    })
-    .catch((err) => {
-      client.release();
-      return err;
-    })
+      .query(query)
+      .then((res) => {
+        client.release();
+        return res;
+      })
+      .catch((err) => {
+        client.release();
+        return err;
+      })
   })
 
 }
@@ -148,38 +138,3 @@ const updateReported = function (reviewID) {
 
 
 
-
-// module.exports = ({productID, page, count, sort}) => {
-
-  // const query =
-  // `SELECT
-  //  id AS review_id,
-  //  rating,
-  //  summary,
-  //  recommend,
-  //  response,
-  //  body,
-  //  date,
-  //  reviewer_name,
-  //  helpfulness
-  //  FROM 'reviewdata'
-  //  SELECT *
-  //  FROM 'reviewphotos'
-  //  WHERE 'product_id' = ${productID}
-  //  LIMIT 1
-  // `;
-
-//   return pool.connect().then((client) => (
-//     client
-//     .query(query)
-//     .then((res) => {
-//       client.release();
-//       return res;
-//     })
-//     .catch((err) => {
-//       client.release();
-//       return err;
-//     });
-//   ));
-
-// };

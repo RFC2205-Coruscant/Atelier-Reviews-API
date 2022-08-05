@@ -9,17 +9,11 @@ const pool = new pg.Pool({
   database: process.env.DB_NAME || 'reviews'
 });
 
-pool.connect();
+pool.on('error', (err, client) => {
+  console.error('Unexpected error on idle client', err)
+  process.exit(-1)
+})
 
 module.exports = pool;
 
-// pool.query(`SELECT id AS review_id, rating, summary, recommend, response, body, date, reviewer_name, helpfulness FROM reviewdata WHERE "product_id" = 641268`,(err, res) => {
-//   if(!err) {
-//     console.log(res.rows);
-//   } else {
-//     console.log(err.message);
-//   }
-//   pool.end
-// })
-// .then(() => console.log("Connected to postgres....."))
-// .catch((err) => console.log(err))
+
